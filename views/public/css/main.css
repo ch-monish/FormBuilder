@@ -1,0 +1,112 @@
+html{
+    scroll-behavior: smooth;
+    /* background-color: rgb(233, 236, 245); */
+}
+.main{
+    margin-top: 30px;
+    background-color: rgb(217, 219, 245);
+}
+.formparent{
+    display: flex;
+    flex-direction: column;
+    min-height: 0px;
+    scroll-behavior: smooth;
+   
+
+}
+.nav-pills{
+    flex:1;
+    flex-direction: col;
+ 
+}
+
+form-group{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding:5px;
+    border-radius: 8px;
+}
+.responsesgroup{
+    min-height:"400px";
+    width: 100%;
+    background-color: rgb(217, 219, 245);
+}
+
+.formchild{
+    display: flex;
+    flex-direction: column;
+    cursor:move;
+    opacity: 1;
+    padding-bottom: 10px;
+    width:100%;
+    border-radius: 8px;
+    background: rgb(255, 255, 255);
+    padding: 10px;
+    
+}
+.formchild:hover{
+    display: flex;
+    flex-direction: column;
+   padding-left: 5px;
+   padding-right: 5px;
+   padding-bottom: 5px;
+   padding-top: 0px;
+    background-color: rgb(145, 127, 247);
+
+  
+}
+
+.label{
+    padding: 5px;
+}
+
+.collapse{
+   justify-items: center;
+}
+
+.form-check{
+    margin-left: 0px;
+    padding: 10px;
+}
+.customize{
+    display: none;
+    /* background-color: rgb(236, 20, 31); */
+    align-self: flex-end;
+    font-size: 30px;
+    color: white;
+    cursor: pointer;
+}
+.formchild:hover >.customize{
+   
+    display: flex;
+}
+
+.options{
+    
+    position: fixed;
+    float: left;
+    margin-left: -30px;
+   
+}
+.nav{
+    cursor:pointer;
+}
+
+
+
+#draggable {
+    width: 100%;
+    /* height: 20px; */
+    text-align: center;
+    background: white;
+  }
+  
+  .dropzone {
+    width:100%;
+    /* height: 230px; */
+    /* background: rgb(255, 255, 255); */
+    /* margin-bottom: 10px; */
+    padding: 10px;
+  }
+
+  

@@ -1,0 +1,28 @@
+html{
+    scroll-behavior: smooth;
+    background-color: rgb(197, 230, 252);
+
+}
+.container-fluid{
+    background-color: rgb(197, 230, 252);
+
+}
+.main{
+    margin-top: 10px;
+    /* background-color: rgb(136, 194, 233); */
+   
+}
+.userform{
+    /* background-color: rgb(255, 255, 255); */
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.formchild{
+    background-color: rgb(255, 255, 255);
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}

@@ -45,12 +45,13 @@
                     var uniqueid = '<%- JSON.stringify(uniqueid) %>'; // test is now a valid js object
                 </script>
 
-                <form class="form-group form" id="formgroup" method="POST">
+                <!-- <form action="/api/formresponse/" class="form-group form" method="POST" -->
+                <!-- <form action='{{url("/api/formresponse/{$uniqueid}")}}' class="form-group form" method="POST" -->
+                <form class="form-group form" method="POST" enctype="multipart/form-data" id="formgroup">
                     <div class="userform" id="userform" onloadstart="user()">
 
                     </div>
-                    <button type="button" class="btn btn-primary btn-block" id="submit-button"
-                        onclick="sendresponse()">Submit</button>
+                    <button type="submit" class="btn btn-primary btn-block" id="submit-button">Submit</button>
                 </form>
 
 

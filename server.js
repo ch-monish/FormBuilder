@@ -4,6 +4,10 @@ const uuid = require('uuid')
 const bodyParser = require('body-parser')
 const ejs = require('ejs')
 const mysql = require("mysql")
+const upload = require('express-fileupload')
+const asyncHandler = require('express-async-handler')
+const fs = require('fs');
+
 var path = require('path');
 require("dotenv").config()
 const app = express()
@@ -39,6 +43,7 @@ app.set("view engine", "ejs")
 app.use(express.static('views'));
 express.static('/public')
 app.use(express.static(__dirname + '/public'));
+app.use(upload())
 
 app.get("/Home", (req, res) => {
     res.render('Home')
@@ -148,7 +153,14 @@ app.delete("/api/deleteform", (req, res) => {
             res.send({ "message": err })
         }
         else {
-
+            console.log(path.dirname("/uploads/upload"))
+            fs.rmdir(path.join(path.dirname("uploads/upload"), uniqueid), function (err) {
+                if (err) {
+                    throw err
+                } else {
+                    console.log("Successfully removed the empty directory!")
+                }
+            })
             console.log(result)
             res.send({ "message": result })
         }
@@ -180,6 +192,14 @@ app.post("/api/recieve", (req, res) => {
             }
             else {
                 // console.log(result)
+                console.log(path.dirname("server/uploads/upload"))
+                fs.mkdir(path.join(path.dirname("uploads/upload"), uniqueid),
+                    { recursive: true }, (err) => {
+                        if (err) {
+                            return console.error(err);
+                        }
+                        console.log('Directory ' + uniqueid + ' created successfully!');
+                    });
                 res.send({ "message": "success", "uniqueid": uniqueid })
             }
         })
@@ -189,21 +209,46 @@ app.post("/api/recieve", (req, res) => {
     }
 })
 
-
-
-
-app.post("/api/formresponse", (req, res) => {
+app.post("/api/formresponse/:uniqueid", async (req, res) => {
 
     console.log(req.body)
-    uniqueid = req.body.uniqueid;
-    response = JSON.stringify(req.body.response);
+    const uniqueid = JSON.parse(req.params.uniqueid);
+    const response = req.body;
+    const filespresent = req.files
 
-    sql = "INSERT INTO responses (uniqueid,response) VALUES ('" + uniqueid + "','" + response + "')";
-
-    // console.log(sql)
+    console.log(response)
     console.log(uniqueid)
+    if (filespresent) {
+        console.log("files present")
+        console.log(req.files)
+        var arr = await Object.keys(req.files)
+        var j = 0
+        console.log(arr)
+        for (const i in req.files) {
+            var file = await req.files[i]
+            // console.log(file)
+            var filename = await file.name
+            console.log(arr[j] + " " + file.name)
+            req.body[arr[j]] = await file.name;
+            j = j + 1
+            await file.mv('./uploads/' + uniqueid + '/' + filename, function async(err) {
+                if (err) {
+                    console.log(err)
+                }
+                else {
+                    console.log("file uploaded")
+                    // req.body.push({name:filename})
+                    console.log(req.body)
+                    // response.push({ "name": "asdfg" })
+                }
+            })
+        }
+    }
 
+    // response = JSON.stringify(req.body);
 
+    sql = "INSERT INTO responses (uniqueid,response) VALUES ('" + uniqueid + "','" + JSON.stringify(response) + "')";
+    console.log(sql)
     mysqlConnection.query(sql, (err, result) => {
         if (err) {
             console.log("got an error :" + err)
@@ -217,6 +262,7 @@ app.post("/api/formresponse", (req, res) => {
 
 
 })
+
 
 
 app.listen(process.env.port, () => {

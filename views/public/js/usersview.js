@@ -1,5 +1,7 @@
 // console.log(data)
 console.log(typeof uniqueid)
+var actionurl = "/api/formresponse/" + uniqueid + ""
+document.getElementById("formgroup").setAttribute('action', "/api/formresponse/" + uniqueid + "");
 getform()
 async function getform() {
     var myHeaders = new Headers();
@@ -153,7 +155,7 @@ function createTextBox(data) {
         newattachcomp.setAttribute("cols", "35");
         // newdiv.innerHTML = "message"
         newattachcomp.setAttribute("id", label + "message" + id);
-        newattachcomp.setAttribute("name", label + "-message" + id);
+        newattachcomp.setAttribute("name", label + "message" + id);
         newattach.appendChild(newattachcomp)
 
         var newattachcomp = document.createElement("label");
@@ -162,7 +164,7 @@ function createTextBox(data) {
         var newattachcomp = document.createElement("input");
         newattachcomp.setAttribute("class", "form-control-file")
         newattachcomp.setAttribute("type", "file");
-        newattachcomp.setAttribute("name", "fileid" + id);
+        newattachcomp.setAttribute("name", label + "-fileid-" + id);
         newattachcomp.setAttribute("id", label + "file-id-" + id);
         newattach.appendChild(newattachcomp)
 
@@ -173,7 +175,7 @@ function createTextBox(data) {
         newattachcomp.setAttribute("class", "form-control-file")
         newattachcomp.setAttribute("type", "file");
         newattachcomp.setAttribute("id", label + "image-id-" + id);
-        newattachcomp.setAttribute("name", label + "image-id-" + id);
+        newattachcomp.setAttribute("name", label + "-imageid-" + id);
         newattachcomp.setAttribute("accept", "image/*");
         newattach.appendChild(newattachcomp)
 
@@ -353,7 +355,7 @@ function sendresponse() {
         redirect: 'follow'
     };
     console.log(uniqueid)
-
+    console.log(raw)
     fetch("http://localhost:3001/api/formresponse", requestOptions)
         .then(response => response.text())
         .then(result => console.log(result))

@@ -169,7 +169,7 @@ function createTextBox(data) {
         newattachcomp.setAttribute("cols", "35");
         // newdiv.innerHTML = "message"
         newattachcomp.setAttribute("id", label + "message" + id);
-        newattachcomp.setAttribute("name", label + "-message" + id);
+        newattachcomp.setAttribute("name", label + "message" + id);
         newattach.appendChild(newattachcomp)
 
         var newattachcomp = document.createElement("label");
@@ -179,7 +179,7 @@ function createTextBox(data) {
         newattachcomp.setAttribute("class", "form-control-file")
         newattachcomp.setAttribute("type", "file");
         newattachcomp.setAttribute("id", label + "file-id-" + id);
-        newattachcomp.setAttribute("name", label + "-file-id-" + id);
+        newattachcomp.setAttribute("name", label + "fileid" + id);
         newattach.appendChild(newattachcomp)
 
         var newattachcomp = document.createElement("label");
@@ -189,7 +189,7 @@ function createTextBox(data) {
         newattachcomp.setAttribute("class", "form-control-file")
         newattachcomp.setAttribute("type", "file");
         newattachcomp.setAttribute("id", label + "image-id-" + id);
-        newattachcomp.setAttribute("name", label + "image-id-" + id);
+        newattachcomp.setAttribute("name", label + "imageid" + id);
         newattachcomp.setAttribute("accept", "image/*");
         newattach.appendChild(newattachcomp)
 

@@ -51,7 +51,7 @@ async function createview(formtitle, uniqueid, time) {
     var parent = document.getElementById("group")
 
     var card = document.createElement("div")
-    card.setAttribute("class", "col-sm-3")
+    card.setAttribute("class", "col-md-3 ")
     parent.appendChild(card)
 
     var newcard = document.createElement("div")
@@ -94,7 +94,8 @@ async function createview(formtitle, uniqueid, time) {
     para.style.color = "blue"
     cardbody.appendChild(para)
 
-
+    var para = document.createElement("p")
+    cardbody.appendChild(para)
 
 
     var anchor = document.createElement("button")

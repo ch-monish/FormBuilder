@@ -1,8 +1,11 @@
 id = 1
 sectionid = 1
 var formelements = {}
+var x = document.getElementById("formparent")
+sortedarray = []
+sortedformelements = {}
 console.log(uniqueid)
-getform()
+// getform()
 async function getform() {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -19,17 +22,17 @@ async function getform() {
     };
     await fetch("http://localhost:3001/api/getform", requestOptions)
         .then(response => response.text())
-        .then(result => {
+        .then(async result => {
             // console.log(result)
 
-            var data = JSON.parse(result)
+            var data = await JSON.parse(result)
             // console.log(data)
             if (data.formelements == "Not valid url") {
                 console.log("working")
 
             }
             else {
-                // console.log(JSON.parse(data.formelements))
+                console.log(JSON.parse(data.formelements))
                 console.log("working1")
                 parse(JSON.parse(data.formelements))
             }
@@ -42,28 +45,42 @@ async function getform() {
 }
 i = 0
 // data = JSON.parse(data)
-// console.log(data)
-function parse(data) {
+async function parse(data) {
     var formelements = data
+    var orderid = 1
     while (formelements[i] != undefined) {
         console.log(formelements[i])
         if (formelements[i].element == "formtitle")
-            createTitle(formelements[i])
-        if (formelements[i].element == "textbox")
-            createTextBox(formelements[i])
+            await createTitle(formelements[i])
+
+        if (formelements[i].element == "textbox") {
+            await createTextBox(formelements[i])
+            if (formelements[i].id > orderid) { orderid = formelements[i].id }
+        }
         if (formelements[i].element == "button")
-            createButton(formelements[i])
-        if (formelements[i].element == "checkbox")
+            console.log("")
+        if (formelements[i].element == "checkbox") {
             createcheckbox(formelements[i])
-        if (formelements[i].element == "radio")
+            if (formelements[i].id > orderid) { orderid = formelements[i].id }
+        }
+        if (formelements[i].element == "radio") {
             createradio(formelements[i])
-        if (formelements[i].element == "textarea")
+            if (formelements[i].id > orderid) { orderid = formelements[i].id }
+        }
+        if (formelements[i].element == "textarea") {
             createtextarea(formelements[i])
-        if (formelements[i].element == "select")
+            if (formelements[i].id > orderid) { orderid = formelements[i].id }
+
+        }
+        if (formelements[i].element == "select") {
             createselect(formelements[i])
+            if (formelements[i].id > orderid) { orderid = formelements[i].id }
+        }
         i = i + 1
 
     }
+
+    id = orderid + 1
 }
 function createTitle(data) {
     document.getElementById("formtitle").value = data.value
@@ -105,7 +122,7 @@ function createTextBox(data) {
 
     var newdiv = document.createElement("div");
     newdiv.setAttribute("class", "form-group formchild");
-    newdiv.setAttribute("id", "form-group formchild" + id);
+    newdiv.setAttribute("id", "" + id);
     newdiv.setAttribute("draggable", "true");
     // newdiv.setAttribute("ondragstart", "handleDragStart('form-group formchild' + " + id + "')")
 
@@ -198,40 +215,11 @@ function createTextBox(data) {
     }
 
     formelements[id] = { "id": id, "element": "textbox", "label": label, "placeholder": placeholder, "type": type, "required": required, "allowattach": allowattach };
-    id++
+    if (data.method != undefined) {
+        id++
+    }
 }
-function createButton() {
-    var button = document.getElementById("buttonmodal-button").value
 
-    var newdiv = document.createElement("div");
-    newdiv.setAttribute("class", "form-group formchild");
-    newdiv.setAttribute("id", "form-group formchild" + id)
-    newdiv.setAttribute("draggable", "true");
-    var customize = document.createElement("div")
-    customize.setAttribute("class", "customize")
-    customize.innerHTML = "x"
-    customize.setAttribute("onclick", "deletefun('form-group formchild" + id + "','" + id + "')")
-    newdiv.appendChild(customize)
-
-
-
-    var foo = document.getElementById("formparent");
-    foo.appendChild(newdiv);
-
-
-
-
-    var newbutton = document.createElement("button");
-    newbutton.setAttribute("class", "btn btn-primary");
-    newbutton.setAttribute("type", "button");
-    newbutton.setAttribute("id", "button-id-" + id);
-    newbutton.setAttribute("name", "button-" + id);
-    // newbutton.setAttribute("text", "button");
-    newbutton.innerHTML = button
-    newdiv.appendChild(newbutton);
-    formelements[id] = { "id": id, "element": "button", "label": button }
-    id++
-}
 
 function createcheckbox(data) {
 
@@ -248,7 +236,7 @@ function createcheckbox(data) {
 
     var newdiv = document.createElement("div");
     newdiv.setAttribute("class", "form-group formchild form-check");
-    newdiv.setAttribute("id", "form-group formchild form-check" + id)
+    newdiv.setAttribute("id", "" + id)
     newdiv.setAttribute("draggable", "true");
     var customize = document.createElement("div")
     customize.setAttribute("class", "customize")
@@ -283,7 +271,9 @@ function createcheckbox(data) {
     newlabel.innerHTML = label;
     newdiv.appendChild(newlabel);
     formelements[id] = { "id": id, "element": "checkbox", "label": label }
-    id++
+    if (data.method != undefined) {
+        id++
+    }
 }
 function createselect(data) {
     if (data.method == undefined) {
@@ -304,7 +294,7 @@ function createselect(data) {
 
     var newdiv = document.createElement("div");
     newdiv.setAttribute("class", "form-group formchild");
-    newdiv.setAttribute("id", "form-group formchild" + id);
+    newdiv.setAttribute("id", "" + id);
     newdiv.setAttribute("draggable", "true");
     var customize = document.createElement("div")
     customize.setAttribute("class", "customize")
@@ -348,7 +338,9 @@ function createselect(data) {
 
 
     formelements[id] = { "id": id, "element": "select", "label": label, "options": selects }
-    id++
+    if (data.method != undefined) {
+        id++
+    }
 }
 
 
@@ -363,7 +355,7 @@ function createtextarea(data) {
 
     var newdiv = document.createElement("div");
     newdiv.setAttribute("class", "form-group formchild");
-    newdiv.setAttribute("id", "form-group formchild" + id);
+    newdiv.setAttribute("id", "" + id);
     newdiv.setAttribute("draggable", "true");
     var customize = document.createElement("div")
     customize.setAttribute("class", "customize")
@@ -388,7 +380,9 @@ function createtextarea(data) {
     newtextarea.setAttribute("rows", "3")
     newdiv.appendChild(newtextarea)
     formelements[id] = { "id": id, "element": "textarea", "label": label }
-    id++
+    if (data.method != undefined) {
+        id++
+    }
 
 }
 
@@ -412,7 +406,7 @@ function createradio(data) {
 
     var newdiv = document.createElement("div");
     newdiv.setAttribute("class", "form-group formchild");
-    newdiv.setAttribute("id", "form-group formchild" + id);
+    newdiv.setAttribute("id", "" + id);
     newdiv.setAttribute("draggable", "true");
     var customize = document.createElement("div")
     customize.setAttribute("class", "customize")
@@ -449,12 +443,14 @@ function createradio(data) {
 
     }
     formelements[id] = { "id": id, "element": "radio", "label": label, "options": options }
-    id++
+    if (data.method != undefined) {
+        id++
+    }
 }
 
 function deletefun(a, id) {
     console.log(a)
-    var myobj = document.getElementById(a);
+    var myobj = document.getElementById(id);
     myobj.remove();
     // console.log(delete formelements[a])
     console.log(formelements[id] = {})
@@ -531,10 +527,11 @@ document.addEventListener("drop", function (event) {
     }
 }, false);
 
-function usersview() {
+async function usersview() {
     // location.replace("./userview.html")
     // var user = document.getElementById("userform")
     // console.log(user)
+    await sorted()
     formtitle = document.getElementById('formtitle').value
     formelements[0] = { "id": 0, "element": "formtitle", "value": formtitle }
 
@@ -621,3 +618,41 @@ async function fetchResponses() {
 
 }
 
+function sorted() {
+    // x.forEach(element => {
+    //     console.log(x["childNodes"][element].id)
+
+    // });
+    sortedformelements = {}
+    sortedarray = []
+    var keyid = 1
+    var x = document.getElementById("formparent")
+    var sortedformelements = {}
+    var sortedarr = []
+    console.log(x["childNodes"])
+    for (i of x["childNodes"]) {
+        sortedarr.push(i.id)
+    }
+    console.log(sortedarr)
+    sortedarray = sortedarr;
+    console.log(formelements)
+
+    var formelementsarr = []
+    var keys = Object.keys(formelements);
+    keys.forEach(function (key) {
+        formelementsarr.push(formelements[key]);
+    });
+    console.log(formelementsarr);
+
+
+    for (i in sortedarr) {
+        // console.log(sortedarr[i])
+        console.log(formelementsarr.find(x => x.id == sortedarr[i]))
+        sortedformelements[keyid] = formelementsarr.find(x => x.id == sortedarr[i])
+        keyid = keyid + 1;
+    }
+
+    console.log(sortedformelements)
+    formelements = sortedformelements
+    console.log(formelements)
+}

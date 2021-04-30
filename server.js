@@ -7,6 +7,7 @@ const mysql = require("mysql")
 const upload = require('express-fileupload')
 const asyncHandler = require('express-async-handler')
 const fs = require('fs');
+const fsPromises = require('fs').promises
 
 var path = require('path');
 require("dotenv").config()
@@ -45,19 +46,57 @@ express.static('/public')
 app.use(express.static(__dirname + '/public'));
 app.use(upload())
 
-app.get("/Home", (req, res) => {
-    res.render('Home')
+
+
+
+app.post('/api/login', (req, res) => {
+
+    console.log(req.body)
+    username = req.body.username
+    password = req.body.password
+    let sql = "SELECT * FROM users WHERE username='" + username + "' AND password='" + password + "'";
+    console.log(sql)
+    mysqlConnection.query(sql, (err, result) => {
+        if (err) {
+            console.log(err)
+            res.send({ "message": err })
+        }
+        else {
+            console.log(result)
+            if (result != "") {
+
+                res.send({ "message": "login successfull", })
+                // res.render('Home')
+            }
+            else {
+                console.log("Incorrect credentials\n---------------------------------------------------------------")
+                res.send({ "message": "Incorrect credentials" })
+            }
+        }
+
+    })
+
+})
+
+
+
+app.get("/login", (req, res) => {
+    res.render('login', { "username": req.params.username })
+})
+app.get("/Dashboard/:username", (req, res) => {
+
+    res.render('Dashboard', { "username": req.params.username })
 })
 app.get("/formbuilder/:username/:uniqueid", (req, res) => {
     console.log(req.params)
     if (req.params.uniqueid == "newform") {
-
+        console.log(req.params.username)
         console.log("newform")
         var newuniqueid = uuid.v4();
-        res.render('formbuilder', { uniqueid: newuniqueid })
+        res.render('formbuilder', { uniqueid: newuniqueid, username: req.params.username })
     }
     else {
-        res.render('formbuilder', { uniqueid: req.params.uniqueid })
+        res.render('formbuilder', { uniqueid: req.params.uniqueid, username: req.params.username })
     }
 })
 app.get("/form/:id", (req, res) => {
@@ -68,7 +107,8 @@ app.get("/form/:id", (req, res) => {
 app.post("/api/getallforms", (req, res) => {
     console.log(req.body.name)
     // res.render('form')
-    username = JSON.stringify(req.body.name)
+    // username = JSON.stringify(req.body.name)
+    username = req.body.name
     sql = "select * from form where username=" + username + ";"
     console.log(sql)
     mysqlConnection.query(sql, (err, result) => {
@@ -147,20 +187,28 @@ app.delete("/api/deleteform", (req, res) => {
     uniqueid = req.body.uniqueid;
     sql = "DELETE FROM form WHERE uniqueid='" + uniqueid + "';DELETE FROM responses WHERE uniqueid='" + uniqueid + "';";
     console.log(sql)
-    mysqlConnection.query(sql, (err, result) => {
+    mysqlConnection.query(sql, async (err, result) => {
         if (err) {
             console.log("got an error :" + err)
             res.send({ "message": err })
         }
         else {
             console.log(path.dirname("/uploads/upload"))
-            fs.rmdir(path.join(path.dirname("uploads/upload"), uniqueid), function (err) {
-                if (err) {
-                    throw err
-                } else {
-                    console.log("Successfully removed the empty directory!")
-                }
-            })
+            try {
+                await fsPromises.rmdir(path.join(path.dirname("uploads/upload"), uniqueid), {
+                    recursive: true
+                })
+            }
+            catch (err) {
+                console.log(err)
+            }
+            // fs.rmdir(path.join(path.dirname("uploads/upload"), uniqueid), function (err) {
+            //     if (err) {
+            //         throw err
+            //     } else {
+            //         console.log("Successfully removed the empty directory!")
+            //     }
+            // })
             console.log(result)
             res.send({ "message": result })
         }

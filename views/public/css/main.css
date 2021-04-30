@@ -27,7 +27,7 @@ form-group{
     border-radius: 8px;
 }
 .responsesgroup{
-    min-height:"400px";
+    min-height:"800px";
     width: 100%;
     background-color: rgb(217, 219, 245);
 }
@@ -109,4 +109,12 @@ form-group{
     padding: 10px;
   }
 
-  
+
+.page{
+  margin-left: 2px;
+}
+
+.container{
+  height: 60px;
+  text-align: center;
+}

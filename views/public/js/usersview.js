@@ -96,6 +96,10 @@ function createTextBox(data) {
     required = data.required
     type = data.type
     allowattach = data.allowattach
+    var name = data.name
+    if (allowattach == "on") {
+        describename = data.describename
+    }
 
 
 
@@ -121,7 +125,7 @@ function createTextBox(data) {
     element.setAttribute("class", "form-control")
     element.setAttribute("id", "textbox" + id)
     element.setAttribute("placeholder", placeholder)
-    element.setAttribute("name", "textbox" + id)
+    element.setAttribute("name", name)
     if (required == "on") {
         element.required = true
     }
@@ -155,7 +159,7 @@ function createTextBox(data) {
         newattachcomp.setAttribute("cols", "35");
         // newdiv.innerHTML = "message"
         newattachcomp.setAttribute("id", label + "message" + id);
-        newattachcomp.setAttribute("name", label + "message" + id);
+        newattachcomp.setAttribute("name", describename);
         newattach.appendChild(newattachcomp)
 
         var newattachcomp = document.createElement("label");
@@ -187,23 +191,24 @@ function createTextBox(data) {
 
 
 }
-function createButton(data) {
-    label = data.label
-    var parent = document.getElementById("userform")
-    var newdiv = document.createElement("div")
-    newdiv.setAttribute("class", "formchild")
-    parent.appendChild(newdiv);
+// function createButton(data) {
+//     label = data.label
+//     var parent = document.getElementById("userform")
+//     var newdiv = document.createElement("div")
+//     newdiv.setAttribute("class", "formchild")
+//     parent.appendChild(newdiv);
 
-    var element = document.createElement("button")
-    element.setAttribute("class", "btn btn-primary btn-block")
-    element.setAttribute("type", "button")
-    element.innerHTML = label
-    element.setAttribute("id", "button" + id)
-    newdiv.appendChild(element)
-}
+//     var element = document.createElement("button")
+//     element.setAttribute("class", "btn btn-primary btn-block")
+//     element.setAttribute("type", "button")
+//     element.innerHTML = label
+//     element.setAttribute("id", "button" + id)
+//     newdiv.appendChild(element)
+// }
 function createcheckbox(data) {
     id = data.id
     label = data.label
+    var name = data.name
 
     var parent = document.getElementById("userform")
     var newdiv = document.createElement("div")
@@ -214,7 +219,7 @@ function createcheckbox(data) {
     element.setAttribute("class", "form-check-input")
     element.setAttribute("type", "checkbox")
     element.setAttribute("defaultValue", "")
-    element.setAttribute("name", label + "checkbox" + id)
+    element.setAttribute("name", name)
     element.style.marginLeft = "20px";
     element.setAttribute("id", "checkbox" + id)
     newdiv.appendChild(element)
@@ -231,6 +236,7 @@ function createradio(data) {
 
     id = data.id
     label = data.label
+    var name = data.name
     options = data.options
     console.log(options)
     var parent = document.getElementById("userform")
@@ -254,7 +260,7 @@ function createradio(data) {
         var element1 = document.createElement("input")
         element1.setAttribute("class", "form-check-input")
         element1.setAttribute("type", "radio")
-        element1.setAttribute("name", label)
+        element1.setAttribute("name", name)
         element1.setAttribute("id", "radio" + s1)
         element1.setAttribute("value", s1)
         element.appendChild(element1)
@@ -270,6 +276,7 @@ function createradio(data) {
 function createtextarea(data) {
 
     label = data.label
+    var name = data.name
 
 
     var parent = document.getElementById("userform")
@@ -288,7 +295,7 @@ function createtextarea(data) {
     var element = document.createElement("textarea")
     element.setAttribute("class", "md-textarea form-control")
     element.setAttribute("id", "textarea" + id)
-    element.setAttribute("name", label + "textarea" + id)
+    element.setAttribute("name", name)
     element.rows = 3
     newdiv.appendChild(element)
 
@@ -300,6 +307,7 @@ function createselect(data) {
     id = data.id
     label = data.label
     select = data.options
+    var name = data.name
 
 
     var parent = document.getElementById("userform")
@@ -320,7 +328,7 @@ function createselect(data) {
     element.setAttribute("class", "form-control");
 
     element.setAttribute("id", "selecttag-id-" + id);
-    element.setAttribute("name", label);
+    element.setAttribute("name", name);
     newdiv.appendChild(element);
 
 

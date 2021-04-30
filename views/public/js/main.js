@@ -4,6 +4,9 @@ var formelements = {}
 var x = document.getElementById("formparent")
 sortedarray = []
 sortedformelements = {}
+var responsesarr = []
+var finalresponesarr = []
+console.log(username)
 console.log(uniqueid)
 // getform()
 async function getform() {
@@ -94,8 +97,14 @@ function createTextBox(data) {
         required = data.required
         type = data.type
         allowattach = data.allowattach
+        name = data.name
+        if (data.allowattach == "on") {
+            describename = data.describename
+        }
     }
     else {
+        var name = ""
+        var describename = ""
         var label = document.getElementById("textboxmodal-label").value
         console.log(label)
         var placeholder = document.getElementById("textboxmodal-placeholder").value
@@ -153,6 +162,7 @@ function createTextBox(data) {
     element.setAttribute("id", "textbox-id-" + id);
     element.setAttribute("placeholder", placeholder);
     element.setAttribute("name", "textbox-" + id);
+    var name = "textbox-" + id
     if (required == "on") {
         element.required = true;
         console.log("required is true")
@@ -187,6 +197,7 @@ function createTextBox(data) {
         // newdiv.innerHTML = "message"
         newattachcomp.setAttribute("id", label + "message" + id);
         newattachcomp.setAttribute("name", label + "message" + id);
+        describename = label + "message" + id
         newattach.appendChild(newattachcomp)
 
         var newattachcomp = document.createElement("label");
@@ -196,7 +207,7 @@ function createTextBox(data) {
         newattachcomp.setAttribute("class", "form-control-file")
         newattachcomp.setAttribute("type", "file");
         newattachcomp.setAttribute("id", label + "file-id-" + id);
-        newattachcomp.setAttribute("name", label + "fileid" + id);
+        newattachcomp.setAttribute("name", label + "-fileid-" + id);
         newattach.appendChild(newattachcomp)
 
         var newattachcomp = document.createElement("label");
@@ -206,15 +217,21 @@ function createTextBox(data) {
         newattachcomp.setAttribute("class", "form-control-file")
         newattachcomp.setAttribute("type", "file");
         newattachcomp.setAttribute("id", label + "image-id-" + id);
-        newattachcomp.setAttribute("name", label + "imageid" + id);
+        newattachcomp.setAttribute("name", label + "-imageid-" + id);
         newattachcomp.setAttribute("accept", "image/*");
         newattach.appendChild(newattachcomp)
 
 
 
     }
+    if (allowattach == "on") {
+        formelements[id] = { "id": id, "element": "textbox", "name": name, "describename": describename, "filename": label + "-fileid-" + id, "imagename": label + "-imageid-" + id, "label": label, "placeholder": placeholder, "type": type, "required": required, "allowattach": allowattach };
 
-    formelements[id] = { "id": id, "element": "textbox", "label": label, "placeholder": placeholder, "type": type, "required": required, "allowattach": allowattach };
+    }
+    else {
+        formelements[id] = { "id": id, "element": "textbox", "name": name, "label": label, "placeholder": placeholder, "type": type, "required": required, "allowattach": allowattach };
+
+    }
     if (data.method != undefined) {
         id++
     }
@@ -226,8 +243,10 @@ function createcheckbox(data) {
     if (data.method == undefined) {
         id = data.id
         label = data.label
+        name = data.name
     }
     else {
+        var name = ""
         var label = document.getElementById("checkboxmodal-text").value
         console.log(label)
     }
@@ -260,6 +279,7 @@ function createcheckbox(data) {
     element.setAttribute("class", "form-check-input");
     element.setAttribute("id", "checkbox-id-" + id);
     element.setAttribute("name", "checkbox-" + id);
+    name = "checkbox-" + id
     newdiv.appendChild(element);
 
 
@@ -270,7 +290,7 @@ function createcheckbox(data) {
     newlabel.setAttribute("for", "checkbox-id-" + id)
     newlabel.innerHTML = label;
     newdiv.appendChild(newlabel);
-    formelements[id] = { "id": id, "element": "checkbox", "label": label }
+    formelements[id] = { "id": id, "element": "checkbox", "name": name, "label": label }
     if (data.method != undefined) {
         id++
     }
@@ -280,8 +300,10 @@ function createselect(data) {
         id = data.id
         label = data.label
         selects = data.options
+        name = data.name
     }
     else {
+        var name = ""
         label = document.getElementById("selectmodal-input").value
         console.log(label)
         var selectss = document.getElementById("selectmodal-Textarea").value
@@ -322,7 +344,8 @@ function createselect(data) {
     element.setAttribute("class", "form-control");
 
     element.setAttribute("id", "selecttag-id-" + id);
-    element.setAttribute("name", label);
+    element.setAttribute("name", label + id);
+    name = label + id
     newdiv.appendChild(element);
 
 
@@ -337,19 +360,20 @@ function createselect(data) {
     }
 
 
-    formelements[id] = { "id": id, "element": "select", "label": label, "options": selects }
+    formelements[id] = { "id": id, "element": "select", "label": label, "name": name, "options": selects }
     if (data.method != undefined) {
         id++
     }
 }
 
-
 function createtextarea(data) {
     if (data.method == undefined) {
         id = data.id
         label = data.label
+        name = data.name
     }
     else {
+        var name = ""
         label = document.getElementById("textarea-input").value
     }
 
@@ -376,10 +400,11 @@ function createtextarea(data) {
     newtextarea.setAttribute("class", "form-control")
     newtextarea.setAttribute("id", "textarea" + id)
     newtextarea.setAttribute("name", "textarea" + id)
+    name = "textarea" + id
 
     newtextarea.setAttribute("rows", "3")
     newdiv.appendChild(newtextarea)
-    formelements[id] = { "id": id, "element": "textarea", "label": label }
+    formelements[id] = { "id": id, "element": "textarea", "name": name, "label": label }
     if (data.method != undefined) {
         id++
     }
@@ -392,8 +417,10 @@ function createradio(data) {
         id = data.id
         label = data.label
         options = data.options
+        name = data.name
     }
     else {
+        var name = ""
         label = document.getElementById("selectradio-input").value
         console.log(label)
         var optionss = document.getElementById("selectradio-Textarea").value
@@ -431,7 +458,8 @@ function createradio(data) {
         var element1 = document.createElement("input")
         element1.setAttribute("class", "form-check-input")
         element1.setAttribute("type", "radio")
-        element1.setAttribute("name", label)
+        element1.setAttribute("name", label + id)
+        name = label + id
         element1.setAttribute("id", "radio" + s1)
         element1.setAttribute("value", s1)
         element.appendChild(element1)
@@ -442,7 +470,7 @@ function createradio(data) {
         element.appendChild(element2)
 
     }
-    formelements[id] = { "id": id, "element": "radio", "label": label, "options": options }
+    formelements[id] = { "id": id, "element": "radio", "label": label, "name": name, "options": options }
     if (data.method != undefined) {
         id++
     }
@@ -455,8 +483,6 @@ function deletefun(a, id) {
     // console.log(delete formelements[a])
     console.log(formelements[id] = {})
 }
-
-
 
 function createsection() {
     console.log("new section")
@@ -535,14 +561,10 @@ async function usersview() {
     formtitle = document.getElementById('formtitle').value
     formelements[0] = { "id": 0, "element": "formtitle", "value": formtitle }
 
-    var pageContent = document.getElementById("formparent").innerHTML;
-    localStorage.setItem("page1content", pageContent);
-    var user = document.getElementById("userform")
-
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     // console.log(formelements)
-    var raw = JSON.stringify({ "username": "monish", "formelements": formelements, "uniqueid": JSON.parse(uniqueid) });
+    var raw = JSON.stringify({ "username": JSON.parse(username), "formelements": formelements, "uniqueid": JSON.parse(uniqueid) });
     // console.log(raw)
 
     var requestOptions = {
@@ -606,7 +628,13 @@ async function fetchResponses() {
                 document.getElementById("responsestatus").innerHTML = "No Responses yet"
             }
             else {
+                responsesarr = []
                 document.getElementById("responsestatus").innerHTML = "" + data.message.length + " Responses Recieved"
+                for (let i of data.message) {
+                    console.log(i.response)
+                    responsesarr.push(JSON.parse(i.response))
+                }
+                showResponses()
             }
 
 
@@ -656,3 +684,194 @@ function sorted() {
     formelements = sortedformelements
     console.log(formelements)
 }
+
+function showResponses() {
+    // sorted()
+    var finalresponearr = []
+    finalresponesarr = []
+    // console.log(responsesarr)
+    formquestionsarr = Object.values(formelements)
+    console.log(formquestionsarr)
+
+    for (i = 0; i < responsesarr.length; i++) {
+        console.log(responsesarr[i])
+        for (e in formelements) {
+            // console.log(formelements[e].name)
+            for (var property in responsesarr[i]) {
+                if (property == formelements[e].name) {
+                    temp = property
+
+                    propertyobj = Object.assign({}, formelements[e]);
+                    // propertyobj = JSON.parse(JSON.stringify(formelements))
+                    propertyobj["answer"] = responsesarr[i][property]
+                    if (formelements[e].allowattach == "on") {
+                        // console.log(formelements[e])
+                        // console.log(formelements[e][describename])
+                        for (var p in formelements[e]) {
+                            if (p == "describename") {
+
+                                console.log(formelements[e]["describename"])
+                                tempdescribe = formelements[e]["describename"]
+                                if (responsesarr[i].hasOwnProperty(tempdescribe)) {
+                                    console.log(responsesarr[i][tempdescribe])
+                                    propertyobj["describeanswer"] = responsesarr[i][tempdescribe]
+                                }
+                            }
+                        }
+                        for (var p in formelements[e]) {
+                            if (p == "filename") {
+
+                                console.log(formelements[e]["filename"])
+                                tempfile = formelements[e]["filename"]
+                                if (responsesarr[i].hasOwnProperty(tempfile)) {
+                                    console.log(responsesarr[i][tempfile])
+                                    propertyobj["filenameanswer"] = responsesarr[i][tempfile]
+                                }
+                            }
+                        }
+                        for (var p in formelements[e]) {
+                            if (p == "imagename") {
+
+                                console.log(formelements[e]["imagename"])
+                                tempimage = formelements[e]["imagename"]
+                                if (responsesarr[i].hasOwnProperty(tempimage)) {
+                                    console.log(responsesarr[i][tempimage])
+                                    propertyobj["imagenameanswer"] = responsesarr[i][tempimage]
+                                }
+                            }
+                        }
+                    }
+                    finalresponearr.push(propertyobj)
+
+                    //   finalresponearr.push()
+                }
+            }
+        }
+        console.log("")
+        finalresponesarr.push(finalresponearr)
+        console.log(finalresponearr)
+        finalresponearr = []
+
+
+
+    }
+    console.log(finalresponesarr)
+
+
+    var state = {
+        'querySet': finalresponesarr,
+
+        'page': 1,
+        'rows': 1,
+        'window': 5,
+    }
+
+    buildTable()
+
+    function pagination(querySet, page, rows) {
+
+        var trimStart = (page - 1) * rows
+        var trimEnd = trimStart + rows
+
+        var trimmedData = querySet.slice(trimStart, trimEnd)
+
+        var pages = Math.round(querySet.length / rows);
+
+        return {
+            'querySet': trimmedData,
+            'pages': pages,
+        }
+    }
+
+    function pageButtons(pages) {
+        var wrapper = document.getElementById('pagination-wrapper')
+
+        wrapper.innerHTML = ``
+        console.log('Pages:', pages)
+        console.log("page : " + state.page)
+
+        var maxLeft = (state.page - Math.floor(state.window / 2))
+        var maxRight = (state.page + Math.floor(state.window / 2))
+
+        if (maxLeft < 1) {
+            maxLeft = 1
+            maxRight = state.window
+        }
+
+        if (maxRight > pages) {
+            maxLeft = pages - (state.window - 1)
+
+            if (maxLeft < 1) {
+                maxLeft = 1
+            }
+            maxRight = pages
+        }
+
+
+
+        for (var page = maxLeft; page <= maxRight; page++) {
+            wrapper.innerHTML += `<button value=${page} class="page btn btn-sm btn-primary">${page}</button>`
+        }
+
+        if (state.page != 1) {
+            wrapper.innerHTML = `<button value=${1} class="page btn btn-sm btn-primary">&#171; First</button>` + wrapper.innerHTML
+        }
+
+        wrapper.innerHTML = `<button value=${state.page > 1 ? state.page - 1 : state.page} class="page btn btn-sm btn-primary">&#171;  </button>` + wrapper.innerHTML
+
+        if (state.page != pages) {
+            wrapper.innerHTML += `<button value=${pages} class="page btn btn-sm btn-primary">Last &#187;</button>`
+        }
+        wrapper.innerHTML += `<button value=${state.page > pages - 1 ? state.page : state.page + 1} class="page btn btn-sm btn-primary"> &#187;</button>`
+        $('.page').on('click', function () {
+            $('#table-body').empty()
+            if (state.page > 0 || state.page <= pages) {
+                state.page = Number($(this).val())
+            }
+            buildTable()
+        })
+
+    }
+
+
+    function buildTable() {
+        var table = $('#table-body')
+
+        var data = pagination(state.querySet, state.page, state.rows)
+        var myList = data.querySet
+
+        for (var i = 1 in myList) {
+            for (var j in myList[i]) {
+                var row = ``
+                document.getElementById("table-body").innerHTML = ""
+
+                // <div class="card" ></div>
+                row = row + `<div style="margin-bottom:10px;background-color:white;border-radius:8px;padding:5px;" ><div> <tr>
+                <td>${myList[i][j].label}</td></tr></div>` + `<tr><div style="color:blue;">
+                <td>${myList[i][j].answer}</td></div></tr></div>`
+                if (myList[i][j].allowattach) {
+                    if (myList[i][j].filenameanswer != undefined) {
+                        row = row + `<div style="margin-bottom:10px;background-color:white;border-radius:8px;padding:5px;" ><div> <tr>
+                <td><a href=${myList[i][j].filenameanswer} download>${myList[i][j].filenameanswer}</a></td></tr></div></div>`
+                    }
+                    if (myList[i][j].imagenameanswer != undefined) {
+                        row = row + `<div style="margin-bottom:10px;background-color:white;border-radius:8px;padding:5px;" ><div> <tr>
+                        <td><a href="/uploads/${uniqueid}/${myList[i][j].imagenameanswer}" download>${myList[i][j].imagenameanswer}</a></td></tr></div></div>`
+                    }
+                }
+
+                // row = row + `<div class="card" > <h5 class="card-title">${myList[i][j].label}</h5><p>${myList[i][j].answer}</p></div>`
+            }
+            table.append(row)
+        }
+
+        pageButtons(data.pages)
+    }
+
+
+
+    //endpagination
+
+}
+
+

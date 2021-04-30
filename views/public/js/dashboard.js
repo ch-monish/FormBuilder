@@ -1,5 +1,6 @@
-var username = "monish"
+// var username = JSON.parse(user)
 
+console.log(username)
 i = 0
 formtitle = ""
 async function getallforms() {
@@ -133,7 +134,7 @@ function GotoForm(uniqueid) {
     console.log(username)
 
     // window.open("https://localhost:3001/formbuilder/" + username + "/" + uniqueid + "", '_blank');
-    location.replace("http://localhost:3001/formbuilder/" + username + "/" + uniqueid + "")
+    location.replace("http://localhost:3001/formbuilder/" + JSON.parse(username) + "/" + uniqueid + "")
     // var requestOptions = {
     //     method: 'GET',
     //     redirect: 'follow'

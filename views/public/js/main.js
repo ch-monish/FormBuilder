@@ -504,54 +504,54 @@ function createsection() {
 var dragged;
 
 /* events fired on the draggable target */
-document.addEventListener("drag", function (event) {
+// document.addEventListener("drag", function (event) {
 
-}, false);
+// }, false);
 
-document.addEventListener("dragstart", function (event) {
-    // store a ref. on the dragged elem
-    dragged = event.target;
+// document.addEventListener("dragstart", function (event) {
+//     // store a ref. on the dragged elem
+//     dragged = event.target;
 
-    event.target.style.opacity = .5;
-}, false);
+//     event.target.style.opacity = .5;
+// }, false);
 
-document.addEventListener("dragend", function (event) {
+// document.addEventListener("dragend", function (event) {
 
-    event.target.style.opacity = "";
-}, false);
+//     event.target.style.opacity = "";
+// }, false);
 
-/* events fired on the drop targets */
-document.addEventListener("dragover", function (event) {
+// /* events fired on the drop targets */
+// document.addEventListener("dragover", function (event) {
 
-    event.preventDefault();
-}, false);
+//     event.preventDefault();
+// }, false);
 
-document.addEventListener("dragenter", function (event) {
+// document.addEventListener("dragenter", function (event) {
 
-    if (event.target.className == "dropzone") {
-        event.target.style.background = "pink";
-    }
+//     if (event.target.className == "dropzone") {
+//         event.target.style.background = "pink";
+//     }
 
-}, false);
+// }, false);
 
-document.addEventListener("dragleave", function (event) {
+// document.addEventListener("dragleave", function (event) {
 
-    if (event.target.className == "dropzone") {
-        event.target.style.background = "";
-    }
+//     if (event.target.className == "dropzone") {
+//         event.target.style.background = "";
+//     }
 
-}, false);
+// }, false);
 
-document.addEventListener("drop", function (event) {
+// document.addEventListener("drop", function (event) {
 
-    event.preventDefault();
-    // move dragged elem to the selected drop target
-    if (event.target.className == "dropzone") {
-        event.target.style.background = "";
-        dragged.parentNode.removeChild(dragged);
-        event.target.appendChild(dragged);
-    }
-}, false);
+//     event.preventDefault();
+//     // move dragged elem to the selected drop target
+//     if (event.target.className == "dropzone") {
+//         event.target.style.background = "";
+//         dragged.parentNode.removeChild(dragged);
+//         event.target.appendChild(dragged);
+//     }
+// }, false);
 
 async function usersview() {
     // location.replace("./userview.html")
@@ -630,6 +630,12 @@ async function fetchResponses() {
             else {
                 responsesarr = []
                 document.getElementById("responsestatus").innerHTML = "" + data.message.length + " Responses Recieved"
+                element1 = document.createElement("button")
+                element1.setAttribute("class", "btn btn-primary")
+                element1.setAttribute("onclick", "converttoexcel()")
+                element1.innerHTML = "download excel"
+                element1.style.float = "right"
+                document.getElementById("responsestatus").appendChild(element1)
                 for (let i of data.message) {
                     console.log(i.response)
                     responsesarr.push(JSON.parse(i.response))
@@ -686,6 +692,7 @@ function sorted() {
 }
 
 function showResponses() {
+    document.getElementById("table-body").innerHTML = ""
     // sorted()
     var finalresponearr = []
     finalresponesarr = []
@@ -697,11 +704,12 @@ function showResponses() {
         console.log(responsesarr[i])
         for (e in formelements) {
             // console.log(formelements[e].name)
+            propertyobj = Object.assign({}, formelements[e]);
+            console.log(propertyobj)
             for (var property in responsesarr[i]) {
                 if (property == formelements[e].name) {
                     temp = property
 
-                    propertyobj = Object.assign({}, formelements[e]);
                     // propertyobj = JSON.parse(JSON.stringify(formelements))
                     propertyobj["answer"] = responsesarr[i][property]
                     if (formelements[e].allowattach == "on") {
@@ -741,11 +749,13 @@ function showResponses() {
                             }
                         }
                     }
-                    finalresponearr.push(propertyobj)
 
                     //   finalresponearr.push()
                 }
+
             }
+            finalresponearr.push(propertyobj)
+
         }
         console.log("")
         finalresponesarr.push(finalresponearr)
@@ -834,30 +844,37 @@ function showResponses() {
     }
 
 
-    function buildTable() {
+    async function buildTable() {
+
         var table = $('#table-body')
 
         var data = pagination(state.querySet, state.page, state.rows)
         var myList = data.querySet
 
         for (var i = 1 in myList) {
+            var row = ``
             for (var j in myList[i]) {
-                var row = ``
-                document.getElementById("table-body").innerHTML = ""
+                // document.getElementById("table-body").innerHTML = ""
 
                 // <div class="card" ></div>
                 row = row + `<div style="margin-bottom:10px;background-color:white;border-radius:8px;padding:5px;" ><div> <tr>
                 <td>${myList[i][j].label}</td></tr></div>` + `<tr><div style="color:blue;">
-                <td>${myList[i][j].answer}</td></div></tr></div>`
+                <td>${myList[i][j].answer != undefined ? myList[i][j].answer : "---Not Answered---"}</td></div></tr></div>`
                 if (myList[i][j].allowattach) {
+                    if (myList[i][j].describeanswer != undefined) {
+                        row = row + `<div style="margin-bottom:10px;background-color:white;border-radius:8px;padding:5px;" ><div> <tr>
+                        <td>Description</td></tr></div>` + `<tr><div style="color:blue;">
+                        <td>${myList[i][j].describeanswer}</td></div></tr></div>`
+                    }
                     if (myList[i][j].filenameanswer != undefined) {
                         row = row + `<div style="margin-bottom:10px;background-color:white;border-radius:8px;padding:5px;" ><div> <tr>
-                <td><a href=${myList[i][j].filenameanswer} download>${myList[i][j].filenameanswer}</a></td></tr></div></div>`
+                        <td ><a href='http://localhost:3001/api/download/${JSON.parse(uniqueid)}/"${myList[i][j].filenameanswer}"/' download >${myList[i][j].filenameanswer}</a></td></tr></div></div>`
                     }
                     if (myList[i][j].imagenameanswer != undefined) {
-                        row = row + `<div style="margin-bottom:10px;background-color:white;border-radius:8px;padding:5px;" ><div> <tr>
-                        <td><a href="/uploads/${uniqueid}/${myList[i][j].imagenameanswer}" download>${myList[i][j].imagenameanswer}</a></td></tr></div></div>`
+                        row = row + `<div style="margin-bottom:10px;background-color:white;border-radius:8px;padding:5px;" ><div > <tr>
+                        <td ><a href='http://localhost:3001/api/download/${JSON.parse(uniqueid)}/"${myList[i][j].imagenameanswer}"/' download >${myList[i][j].imagenameanswer}</a></td></tr></div></div>`
                     }
+
                 }
 
                 // row = row + `<div class="card" > <h5 class="card-title">${myList[i][j].label}</h5><p>${myList[i][j].answer}</p></div>`
@@ -874,4 +891,108 @@ function showResponses() {
 
 }
 
+// async function downloadfiles(filename) {
+//     console.log(filename)
+//     console.log(uniqueid)
+//     url = 'http://localhost:3001/api/download/' + JSON.parse(uniqueid) + '/"' + filename + '"/'
+//     console.log(url)
+//     window.open(
+//         url, "_blank");
 
+//     await fetch(url, {
+//         method: "GET"
+//     })
+//         .then(response => response.text())
+//         .then(async result => {
+//             // console.log(result)
+//             documentresult = result
+//             console.log(result)
+
+//             return result
+
+//         })
+
+//     // console.log(b)
+// }
+async function converttoexcel() {
+    var toexcell = []
+    var toexcel = {}
+    var excellobject = {}
+    var toexcelobject = {}
+    if (finalresponesarr.length != 0) {
+        console.log("convert to excel")
+        console.log(finalresponesarr)
+        for (o of finalresponesarr) {
+            // console.log(o)
+            var i = 0
+            for (e in o) {
+                for (f in e) {
+
+                    // console.log(o[e])
+                    if (o[e].answer != undefined) {
+                        excellobject["label"] = o[e].label
+                        excellobject["answer"] = o[e].answer
+                        // excellobject[o[e].label] = o[e].answer
+                        if (o[e].required == "on") {
+                            excellobject["Description"] = "Description"
+                            excellobject["describeanswer"] = o[e].describeanswer
+                        }
+                    }
+                    else {
+                        excellobject["label"] = o[e].label
+                        // excellobject["answer"] = undefined
+                    }
+
+                }
+
+                console.log(excellobject)
+
+                // toexcel.push(excellobject)
+                toexcel[excellobject["label"]] = excellobject["answer"]
+                if (excellobject["Description"] != undefined) {
+                    toexcel["Description"] = excellobject["describeanswer"]
+                }
+                i = i++
+                excellobject = {}
+            }
+
+            console.log(toexcel)
+            // toexcelobject = Object.assign({}, toexcel)
+            toexcell.push(toexcel)
+            toexcel = {}
+            toexcelobject = {}
+        }
+        console.log(toexcell)
+
+    }
+
+
+    jsondata =
+    {
+        color: "red",
+        value: "#f00"
+    }
+
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({
+        "data": toexcell
+    });
+
+    var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+    };
+    await fetch("http://localhost:3001/api/jsontoexcel/" + uniqueid + "", requestOptions)
+        .then(response => response.text())
+        .then(async result => {
+            // console.log(result) 
+        })
+    url = `http://localhost:3001/api/download/${JSON.parse(uniqueid)}/"${JSON.parse(uniqueid)}output.xlsx"`
+    console.log(url)
+    window.open(url)
+
+}

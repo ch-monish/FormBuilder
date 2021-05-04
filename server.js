@@ -8,6 +8,8 @@ const upload = require('express-fileupload')
 const asyncHandler = require('express-async-handler')
 const fs = require('fs');
 const fsPromises = require('fs').promises
+var json2xls = require('json2xls');
+var isJson = require('is-json')
 
 var path = require('path');
 require("dotenv").config()
@@ -33,6 +35,8 @@ mysqlConnection.connect((err) => {
 })
 
 
+
+
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
@@ -46,8 +50,71 @@ express.static('/public')
 app.use(express.static(__dirname + '/public'));
 app.use(upload())
 
+var json = {
+    foo: 'bar',
+    qux: 'moo',
+    poo: 123,
+    stux: new Date()
+}
+
+// var xls = json2xls(json);
+
+// fs.writeFileSync('data.xlsx', xls, 'binary');
+
+app.post('/api/jsontoexcel/:uniqueid', async (req, res) => {
+
+    console.log(req.body.data)
+    var id = JSON.parse(req.params.uniqueid)
+    console.log(JSON.parse(req.params.uniqueid))
+    var jsondata = JSON.stringify(req.body.data)
+    var exceloutput = id + "output.xlsx"
+
+    if (isJson(jsondata)) {
+        var xls = await json2xls(JSON.parse(jsondata));
+
+        await fs.writeFileSync(path.join("uploads", path.join(id, exceloutput)), xls, 'binary');
+        // res.download(exceloutput)
+        res.download(path.join("uploads", path.join(id, exceloutput)), (err) => {
+            if (err) {
+                fs.unlinkSync(path.join("uploads", path.join(id, exceloutput)))
+                res.send("Unable to download the excel file")
+            }
+            // fs.unlinkSync(exceloutput)
+            console.log("xl sheet downloaded")
+        })
+    }
+    else {
+        res.send("JSON Data is not valid")
+    }
+
+})
+
+app.get('/api/download/:uniqueid/:filename', (req, res) => {
+    console.log(req.params.filename)
+    filename = JSON.parse(req.params.filename)
+    let file = path.join(path.dirname("uploads/upload"), req.params.uniqueid)
+    console.log(file)
+    filepath = path.join(__dirname, path.join(file, filename))
+    console.log(filepath)
+    fs.access(filepath, fs.constants.F_OK, err => {
+        //check that we can access  the file
+        console.log(`${filename} ${err ? "does not exist" : "exists"}`);
+    });
+    res.download(filepath)
 
 
+    // fs.readFile(filepath, function (err, content) {
+    //     if (err) {
+    //         res.writeHead(404, { "Content-type": "text/html" });
+    //         res.end("<h1>No such image</h1>");
+    //     } else {
+    //         //specify the content type in the response will be an image
+    //         res.writeHead(200, { "Content-type": "image/jpg" });
+    //         res.end(content);
+    //     }
+    // });
+
+})
 
 app.post('/api/login', (req, res) => {
 

@@ -18,6 +18,8 @@
     "express": "^4.17.1",
     "express-async-handler": "^1.1.4",
     "express-fileupload": "^1.2.1",
+    "is-json": "^2.0.1",
+    "json2xls": "^0.1.2",
     "mysql": "^2.18.1",
     "sortablejs": "^1.13.0",
     "uuid": "^8.3.2"

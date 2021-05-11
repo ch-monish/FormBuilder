@@ -634,6 +634,7 @@ async function fetchResponses() {
                 element1.setAttribute("class", "btn btn-primary")
                 element1.setAttribute("onclick", "converttoexcel()")
                 element1.innerHTML = "download excel"
+                element1.setAttribute("aria-label", "download")
                 element1.style.float = "right"
                 document.getElementById("responsestatus").appendChild(element1)
                 for (let i of data.message) {

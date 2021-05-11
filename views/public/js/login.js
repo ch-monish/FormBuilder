@@ -28,7 +28,15 @@ function getInfo() {
             .then(response => response.text())
             .then(async result => {
                 console.log(result)
-                await location.replace(`http://localhost:3001/Dashboard/${username}`)
+                resultjson = JSON.parse(result)
+                if (resultjson.message == "login successfull") {
+                    await location.replace(`http://localhost:3001/Dashboard/${username}`)
+                }
+                else {
+                    console.log(result.message)
+                    alert("Incorrect Username or Password")
+                    location.reload()
+                }
             })
             .catch(error => console.log('error', error));
 

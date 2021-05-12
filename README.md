@@ -15,7 +15,7 @@ password=```Your database password```<br>
 database=```Name of the database ```<br>
 port=```port number```<br>
 
-### Starting the server
+#### Starting the server
 ```
 node server.js
 ```
